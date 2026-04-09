@@ -1,0 +1,27 @@
+{
+  "name": "gerenciador-de-tarefas",
+  "version": "1.0.0",
+  "description": "API para gerenciar tarefas, permitindo criar, ler, atualizar e excluir tarefas.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.25",
+    "@types/node": "^25.5.2",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "express": "^4.22.1",
+    "express-async-errors": "^3.1.1",
+    "prisma": "^5.22.0",
+    "zod": "^3.25.76"
+  }
+}
