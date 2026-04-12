@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.teamsRoutes = void 0;
+const express_1 = require("express");
+const teams_controller_1 = require("../controllers/teams-controller");
+const verify_user_authorization_1 = require("../middewares/verify-user-authorization");
+const teamsRoutes = (0, express_1.Router)();
+exports.teamsRoutes = teamsRoutes;
+teamsRoutes.post("/", (0, verify_user_authorization_1.verifyUserAuthorization)(["admin"]), teams_controller_1.createTeam);
+teamsRoutes.get("/", (0, verify_user_authorization_1.verifyUserAuthorization)(["admin"]), teams_controller_1.getTeams);
+teamsRoutes.put("/:id", (0, verify_user_authorization_1.verifyUserAuthorization)(["admin"]), teams_controller_1.updateTeam);
+teamsRoutes.delete("/:id", (0, verify_user_authorization_1.verifyUserAuthorization)(["admin"]), teams_controller_1.deleteTeam);
+teamsRoutes.get("/:id", (0, verify_user_authorization_1.verifyUserAuthorization)(["admin"]), teams_controller_1.getTeamById);
+teamsRoutes.get("/user/:userId", (0, verify_user_authorization_1.verifyUserAuthorization)(["admin"]), teams_controller_1.getTeamsByUserId);
+teamsRoutes.get("/status/:status", (0, verify_user_authorization_1.verifyUserAuthorization)(["admin"]), teams_controller_1.getTeamsByStatus);
