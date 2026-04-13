@@ -6,20 +6,16 @@ import { TasksController } from "../controllers/tasks-controllers";
 const tasksRoutes = Router();
 const tasksController = new TasksController();
 
-tasksRoutes.post("/", ensureAuthenticated, (req, res) => tasksController.createTask(req, res));
+tasksRoutes.post("/", ensureAuthenticated, verifyUserAuthorization(["admin","member"]), tasksController.createTask);
 
-tasksRoutes.get("/", ensureAuthenticated, verifyUserAuthorization(["admin"]), (req, res) => tasksController.getTasks(req, res));
+tasksRoutes.get("/", ensureAuthenticated, verifyUserAuthorization(["admin", "member"]), tasksController.getTasks);
 
-tasksRoutes.put("/:id", ensureAuthenticated, verifyUserAuthorization(["admin"]), (req, res) => tasksController.updateTask(req, res));
+tasksRoutes.put("/:id", ensureAuthenticated, verifyUserAuthorization(["admin", "member"]), tasksController.updateTask);
 
-tasksRoutes.patch("/:id/status", ensureAuthenticated, verifyUserAuthorization(["admin"]), (req, res) => tasksController.updateTasksByStatus(req, res));
+tasksRoutes.patch("/:id/status", ensureAuthenticated, verifyUserAuthorization(["admin", "member"]),tasksController.updateTasksByStatus);
 
-tasksRoutes.delete("/:id", ensureAuthenticated, verifyUserAuthorization(["admin"]), (req, res) => tasksController.deleteTask(req, res));
+tasksRoutes.delete("/:id", ensureAuthenticated, verifyUserAuthorization(["admin", "member"]), tasksController.deleteTask);
 
-tasksRoutes.get("/:id", ensureAuthenticated, (req, res) => tasksController.getTaskById(req, res));
 
-tasksRoutes.get("/user/:userId", ensureAuthenticated, (req, res) => tasksController.getTasksByUserId(req, res));
-
-// tasksRoutes.get("/status/:status", ensureAuthenticated, (req, res) => tasksController.getTasksByStatus(req, res));
 
 export { tasksRoutes };

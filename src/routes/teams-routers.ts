@@ -3,10 +3,7 @@ import {
   createTeam,
   getTeams,
   updateTeam,
-  deleteTeam,
-  getTeamById,
-  getTeamsByUserId,
-  getTeamsByStatus,
+  deleteTeam, 
 } from "../controllers/teams-controller";
 import { ensureAuthenticated } from "../middewares/ensure-authenticated";
 import { verifyUserAuthorization } from "../middewares/verify-user-authorization";
@@ -37,23 +34,6 @@ teamsRoutes.delete(
   verifyUserAuthorization(["admin"]),
   deleteTeam,
 );
-teamsRoutes.get(
-  "/:id",
-  ensureAuthenticated,
-  verifyUserAuthorization(["admin"]),
-  getTeamById,
-);
-teamsRoutes.get(
-  "/user/:userId",
-  ensureAuthenticated,
-  verifyUserAuthorization(["admin"]),
-  getTeamsByUserId,
-);
-teamsRoutes.get(
-  "/status/:status",
-  ensureAuthenticated,
-  verifyUserAuthorization(["admin"]),
-  getTeamsByStatus,
-);
+
 
 export { teamsRoutes };

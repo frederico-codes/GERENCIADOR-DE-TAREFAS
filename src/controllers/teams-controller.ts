@@ -54,21 +54,20 @@ export async function updateTeam(req: Request, res: Response) {
 }
 
 export async function deleteTeam(req: Request, res: Response) {
-  // Lógica para deletar uma equipe existente
+  const { id } = req.params;
+
+  const team = await prisma.team.findUnique({
+    where: { id },
+  });
+
+  if (!team) {
+    throw new AppError("Equipe não encontrada", 404);
+  }
+
+  await prisma.team.delete({
+    where: { id },
+  });
+
   res.status(200).json({ message: "Equipe deletada com sucesso!" });
 }
 
-export async function getTeamById(req: Request, res: Response) {
-  // Lógica para obter uma equipe específica por ID
-  res.status(200).json({ team: null });
-}
-
-export async function getTeamsByUserId(req: Request, res: Response) {
-  // Lógica para obter todas as equipes de um usuário específico por ID
-  res.status(200).json({ teams: [] });
-}
-
-export async function getTeamsByStatus(req: Request, res: Response) {
-  // Lógica para obter todas as equipes com um status específico
-  res.status(200).json({ teams: [] });
-}
