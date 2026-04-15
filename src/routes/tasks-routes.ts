@@ -12,8 +12,6 @@ tasksRoutes.get("/", ensureAuthenticated, verifyUserAuthorization(["admin", "mem
 
 tasksRoutes.put("/:id", ensureAuthenticated, verifyUserAuthorization(["admin", "member"]), tasksController.updateTask);
 
-tasksRoutes.patch("/:id/status", ensureAuthenticated, verifyUserAuthorization(["admin", "member"]),tasksController.updateTasksByStatus);
-
 tasksRoutes.delete("/:id", ensureAuthenticated, verifyUserAuthorization(["admin", "member"]), tasksController.deleteTask);
 
 

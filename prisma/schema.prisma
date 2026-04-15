@@ -79,13 +79,15 @@ model Task {
   assignedTo  String?       @map("assigned_to")//campo obrigatório no insomnia
   teamId      String?       @map("team_id")
 
-  assignee    User?         @relation(fields: [assignedTo], references: [id])//campo obrigatório no insomnia
+  assignee    User?         @relation(fields: [assignedTo], references: [id])//campo obrigatório no insomnia.objeto Usuário completo
   team        Team?         @relation(fields: [teamId], references: [id])
   history     TaskHistory[]
 
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
 
+
+  @@unique([title, description, assignedTo, teamId])
   @@map("tasks")
 }
 
@@ -96,7 +98,7 @@ model TaskHistory {
   oldStatus   TaskStatus  @map("old_status")
   newStatus   TaskStatus  @map("new_status")
 
-  task        Task        @relation(fields: [taskId], references: [id])
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user        User        @relation(fields: [changedBy], references: [id])
 
   changedAt   DateTime    @default(now()) @map("changed_at")

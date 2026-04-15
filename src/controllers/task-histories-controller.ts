@@ -39,14 +39,7 @@ const createTaskHistorySchema = z.object({
       });
 
       res.status(201).json(newTaskHistory);
-    }
-
-    async listTaskHistories(req: Request, res: Response): Promise<void> {
-      const taskHistories = await prisma.taskHistory.findMany({   });
-
-      
-      res.status(200).json(taskHistories);
-    }
+    }    
 
     async showTaskHistory(req: Request, res: Response): Promise<void> {
       const { id: taskId } = req.params;
@@ -59,6 +52,14 @@ const createTaskHistorySchema = z.object({
 
       const newTaskHistory = await prisma.taskHistory.findMany({
         where: { taskId },
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+
       });
 
    

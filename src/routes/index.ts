@@ -4,8 +4,6 @@ import { tasksRoutes } from "./tasks-routes";
 import { teamsRoutes } from "./teams-routers";
 import { tasksHistoriesRoutes } from "./tasks-histories-routes";
 import { sessionsRoutes } from "./sessions-routes";
-import { ensureAuthenticated } from "../middewares/ensure-authenticated";
-import { verifyUserAuthorization } from "../middewares/verify-user-authorization";
 import { teamMemberRoutes } from "./team-member-routes";
 
 const routes = Router();

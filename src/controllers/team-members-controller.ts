@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../database/prisma";
 import { AppError } from "../utils/AppError";
+import { Prisma } from "@prisma/client";
 
 
 
@@ -30,27 +31,52 @@ export class TeamMembersController {
       throw new AppError("User not found", 404);
     }
 
-    const teamMember = await prisma.teamMember.create({
-      data: {
-        teamId,
-        userId,
-      },
-      include: {
-        team: {
-          select: {
-            name: true,
-          },
-        },
-        user: {
-          select: {
-            name: true,
-          },
+    const existingTeamMember = await prisma.teamMember.findUnique({
+      where: {
+        userId_teamId: {
+          userId,
+          teamId,
         },
       },
     });
 
-    res.status(201).json(teamMember);
-  }
+    if (existingTeamMember) {
+      throw new AppError("User is already a member of this team", 409);
+    }
+
+    try {
+      const teamMember = await prisma.teamMember.create({
+        data: {
+          teamId,
+          userId,
+        },
+        include: {
+          team: {
+            select: {
+              name: true,
+            },
+          },
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+        res.status(201).json(teamMember);
+      } catch (error) {
+        if (
+          error instanceof Prisma.PrismaClientKnownRequestError &&
+          error.code === "P2002"
+        ) {
+          throw new AppError("User is already a member of this team", 409);
+        }
+
+        throw error;
+      }
+    }
+
 
   async listTeamMembers(req: Request, res: Response): Promise<void> {
     const teamMembers = await prisma.teamMember.findMany({
@@ -73,7 +99,11 @@ export class TeamMembersController {
 
 
   async removeTeamMember(req: Request, res: Response): Promise<void> {
-    const { teamId, userId } = createTeamMemberSchema.parse(req.body);
+    const paramSchema = z.object({
+      teamId: z.string().uuid(),
+      userId: z.string().uuid(),
+    }); 
+   const { teamId, userId } = paramSchema.parse(req.params);
 
     const teamMember = await prisma.teamMember.findUnique({
       where: {

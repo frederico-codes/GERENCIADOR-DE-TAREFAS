@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { AppError } from "../utils/AppError";
 import { prisma } from "../database/prisma";
+import App from "next/app";
 
 const updateTeamSchema = z
   .object({
@@ -14,6 +15,16 @@ const updateTeamSchema = z
 
 export async function createTeam(req: Request, res: Response) {
   const { name, description } = req.body;
+
+  const existingTeam = await prisma.team.findFirst({
+    where: {
+      name,
+    },
+  });
+
+  if (existingTeam) {
+    throw new AppError("Já existe uma equipe com esse nome.", 409);
+  }
 
   const team = await prisma.team.create({
     data: {
@@ -35,15 +46,28 @@ export async function getTeams(req: Request, res: Response) {
 export async function updateTeam(req: Request, res: Response) {
   const { id } = req.params;
 
-  const data = updateTeamSchema.parse(req.body);
-
   const team = await prisma.team.findUnique({
     where: { id },
   });
+  
+  if(team?.id && team?.name && team?.description) {
+    throw new AppError("Equipe com mesmos dados já existe", 409);
+  }
 
   if (!team) {
     throw new AppError("Equipe não encontrada", 404);
   }
+
+  if (!team.id) {
+    throw new AppError("ID da equipe não encontrado", 404);
+  }
+
+  if (req.user?.role === "member" && team.id !== req.user.id) {
+    throw new AppError("Unauthorized", 403);
+  }
+
+  const data = updateTeamSchema.parse(req.body);
+
 
   const updatedTeam = await prisma.team.update({
     where: { id },

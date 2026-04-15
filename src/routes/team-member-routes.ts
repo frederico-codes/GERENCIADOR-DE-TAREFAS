@@ -9,7 +9,7 @@ const teamMembersController = new TeamMembersController();
 teamMemberRoutes.post("/", ensureAuthenticated, verifyUserAuthorization(["admin"]), teamMembersController.addTeamMember);
 teamMemberRoutes.get("/", ensureAuthenticated, teamMembersController.listTeamMembers);
 
-teamMemberRoutes.delete("/", ensureAuthenticated, verifyUserAuthorization(["admin"]), teamMembersController.removeTeamMember);
+teamMemberRoutes.delete("/teams/:teamId/members/:userId", ensureAuthenticated, verifyUserAuthorization(["admin"]), teamMembersController.removeTeamMember);
 
 
 export { teamMemberRoutes };
