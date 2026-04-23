@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../database/prisma";
 import { AppError } from "../utils/AppError";
-
+import { createTaskHistory } from "../services/create-task-history";
 
 const createTaskSchema = z.object({
   title: z.string().trim().min(1, "O titulo da tarefa e obrigatorio."),
@@ -36,7 +36,7 @@ export class TasksController {
           throw new AppError("Usuário não encontrado.", 404);
         }
       }
-
+      
         const teamMember = await prisma.teamMember.findUnique({
           where: {
             userId_teamId: {
@@ -77,9 +77,20 @@ export class TasksController {
           },
         },
       });
+      
+
+      await prisma.taskHistory.create({
+        data: {
+          taskId: newTask.id,
+          changedBy: req.user.id,
+          oldStatus: newTask.status,
+          newStatus: newTask.status,
+        },
+      });
 
       res.status(201).json(newTask);
     } catch (error) {
+      
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2002"
@@ -107,6 +118,8 @@ export class TasksController {
      priority?: TaskPriority;
      assignedTo?: string;
    } = {};
+
+   
  
    if (status) {
      where.status = status;
@@ -118,6 +131,7 @@ export class TasksController {
  
   if (req.user.role === "member") {
     where.assignedTo = req.user.id;
+    
   } else if (userId) {
     where.assignedTo = userId;
   }

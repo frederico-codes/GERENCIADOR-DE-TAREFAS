@@ -9,6 +9,8 @@ const tasksHistoriesController = new TaskHistoriesController();
 
 tasksHistoriesRoutes.post("/", ensureAuthenticated,tasksHistoriesController.createTaskHistory);
 
-tasksHistoriesRoutes.get("/:id/history", ensureAuthenticated, verifyUserAuthorization(["admin"]),tasksHistoriesController.showTaskHistory);
+tasksHistoriesRoutes.get("/:taskId/tasks-histories", ensureAuthenticated, verifyUserAuthorization(["admin"]),tasksHistoriesController.showTaskHistory);
+
+tasksHistoriesRoutes.get("/", ensureAuthenticated, verifyUserAuthorization(["admin"]),tasksHistoriesController.listAllTaskHistories);
 
 export { tasksHistoriesRoutes };

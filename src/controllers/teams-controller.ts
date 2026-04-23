@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { AppError } from "../utils/AppError";
 import { prisma } from "../database/prisma";
-import App from "next/app";
+
 
 const updateTeamSchema = z
   .object({
@@ -39,7 +39,7 @@ export async function createTeam(req: Request, res: Response) {
 export async function getTeams(req: Request, res: Response) {
   const teams = await prisma.team.findMany({});
 
-  // Lógica para obter todas as equipes
+ 
   res.status(200).json({ teams });
 }
 
@@ -49,10 +49,7 @@ export async function updateTeam(req: Request, res: Response) {
   const team = await prisma.team.findUnique({
     where: { id },
   });
-  
-  if(team?.id && team?.name && team?.description) {
-    throw new AppError("Equipe com mesmos dados já existe", 409);
-  }
+
 
   if (!team) {
     throw new AppError("Equipe não encontrada", 404);
@@ -73,7 +70,7 @@ export async function updateTeam(req: Request, res: Response) {
     where: { id },
     data,
   });
-  // Lógica para atualizar uma equipe existente
+  
   res.status(200).json(updatedTeam);
 }
 

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "../database/prisma";
 import { AppError } from "../utils/AppError";
 
+
 const createTaskHistorySchema = z.object({
   taskId: z.string().uuid(),
   new_status: z.enum(["pending", "in_progress", "completed"]),
@@ -42,12 +43,16 @@ const createTaskHistorySchema = z.object({
     }    
 
     async showTaskHistory(req: Request, res: Response): Promise<void> {
-      const { id: taskId } = req.params;
+      const { taskId } = req.params;
 
       const task = await prisma.task.findUnique({ where: { id: taskId } });
 
-      if (req.user?.role === "member" && task?.assignedTo !== req.user.id) {
-        throw new AppError("the user can only view their deliveries", 403);
+      if (!task) {
+        throw new AppError("Tarefa não encontrada", 404);
+      }
+
+      if (req.user.role === "member" && task?.assignedTo !== req.user.id) {
+        throw new AppError("Você só pode visualizar o histórico das suas próprias tarefas.", 403);
       }
 
       const newTaskHistory = await prisma.taskHistory.findMany({
@@ -64,5 +69,18 @@ const createTaskHistorySchema = z.object({
 
    
       res.status(200).json(newTaskHistory);
+    }
+
+    async listAllTaskHistories(req: Request, res: Response): Promise<void> {
+      const taskHistories = await prisma.taskHistory.findMany({
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+      res.status(200).json(taskHistories);
     }
   }

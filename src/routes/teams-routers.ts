@@ -29,7 +29,7 @@ teamsRoutes.put(
   updateTeam,
 );
 teamsRoutes.delete(
-  "/:id",
+  "/:userId/:teamId",
   ensureAuthenticated,
   verifyUserAuthorization(["admin"]),
   deleteTeam,

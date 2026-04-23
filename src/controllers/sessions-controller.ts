@@ -4,7 +4,7 @@ import { sign } from "jsonwebtoken";
 import { authConfig } from "../configs/auth";
 import { prisma } from "../database/prisma";
 import { z } from "zod";
-import { compare } from "bcryptjs";
+import { compare } from "bcrypt";
 
 const schema = z.object({
   email: z.string().email({ message: "Invalid email format" }),
@@ -32,7 +32,7 @@ class SessionsController {
 
       const token = sign({ role: user.role },secret, {
         subject: user.id,
-        expiresIn: expiresIn,
+        expiresIn,
       });
 
       const { password: _, ...userWithoutPassword } = user;

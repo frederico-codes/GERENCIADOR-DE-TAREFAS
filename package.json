@@ -4,28 +4,38 @@
   "description": "API para gerenciar tarefas, permitindo criar, ler, atualizar e excluir tarefas.",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node dist/server.js"
+    "dev": "tsx watch --env-file .env src/server.ts",
+    "test:dev": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest --watchAll --runInBand",
+    "build": "tsup src/server.ts --out-dir build",
+    "start": "node build/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.25",
+    "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^25.5.2",
+    "@types/node": "^20.19.39",
+    "@types/supertest": "^6.0.3",
+    "ts-jest": "^29.4.9",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.2"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
-    "bcryptjs": "^3.0.3",
+    "bcrypt": "^5.1.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "^17.4.2",
     "express": "^4.22.1",
     "express-async-errors": "^3.1.1",
-    "jsonwebtoken": "^9.0.3",
+    "jest": "^29.7.0",
+    "jsonwebtoken": "^9.0.2",
     "prisma": "^5.22.0",
+    "supertest": "^7.2.2",
     "zod": "^3.25.76"
   }
 }
