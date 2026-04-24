@@ -10,28 +10,23 @@ import { verifyUserAuthorization } from "../middewares/verify-user-authorization
 
 const teamsRoutes = Router();
 
+teamsRoutes.use(ensureAuthenticated);
+teamsRoutes.use(verifyUserAuthorization(["admin"]));
+
 teamsRoutes.post(
   "/",
-  ensureAuthenticated,
-  verifyUserAuthorization(["admin"]),
   createTeam,
 );
 teamsRoutes.get(
   "/",
-  ensureAuthenticated,
-  verifyUserAuthorization(["admin"]),
   getTeams,
 );
 teamsRoutes.put(
   "/:id",
-  ensureAuthenticated,
-  verifyUserAuthorization(["admin"]),
   updateTeam,
 );
 teamsRoutes.delete(
-  "/:userId/:teamId",
-  ensureAuthenticated,
-  verifyUserAuthorization(["admin"]),
+  "/teams/:id",
   deleteTeam,
 );
 
