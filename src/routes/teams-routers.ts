@@ -26,7 +26,7 @@ teamsRoutes.put(
   updateTeam,
 );
 teamsRoutes.delete(
-  "/teams/:id",
+  "/:id",
   deleteTeam,
 );
 
