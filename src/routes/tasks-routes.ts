@@ -14,15 +14,15 @@ const tasksPrioritiesController = new TasksPrioritiesController();
 tasksRoutes.use(ensureAuthenticated);
 tasksRoutes.use(verifyUserAuthorization(["admin", "manager"]));
 
-tasksRoutes.post("/", ensureAuthenticated, tasksController.createTask);
+tasksRoutes.post("/", tasksController.createTask);
 
-tasksRoutes.get("/", ensureAuthenticated, tasksController.getTasks);
+tasksRoutes.get("/", tasksController.getTasks);
 
-tasksRoutes.put("/:id", ensureAuthenticated, tasksController.updateTask);
+tasksRoutes.put("/:id", tasksController.updateTask);
 
-tasksRoutes.patch("/:id/status", ensureAuthenticated, tasksStatusController.updateTaskStatus);
+tasksRoutes.patch("/:id/status", tasksStatusController.updateTaskStatus);
 
-tasksRoutes.patch("/:id/priority", ensureAuthenticated, tasksPrioritiesController.updateTaskPriority);
-tasksRoutes.delete("/:id", ensureAuthenticated, tasksController.deleteTask);
+tasksRoutes.patch("/:id/priority", tasksPrioritiesController.updateTaskPriority);
+tasksRoutes.delete("/:id", tasksController.deleteTask);
 
 export { tasksRoutes };
