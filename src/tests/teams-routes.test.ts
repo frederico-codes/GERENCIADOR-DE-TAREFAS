@@ -2,7 +2,6 @@ import request from "supertest"
 import { hash } from "bcrypt"
 import { app } from "../app"
 import { prisma } from "../database/prisma"
-import { describe, it, expect, beforeAll, afterAll } from "@jest/globals"
 
 describe("Teams routes", () => {
   let token: string
