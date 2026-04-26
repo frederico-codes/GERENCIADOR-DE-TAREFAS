@@ -12,78 +12,79 @@ const updateTeamSchema = z
     message: "Informe ao menos um campo para atualizar",
   })
 
-export async function createTeam(req: Request, res: Response) {
-  const { name, description } = req.body
+export class TeamsController {
+  async createTeam(req: Request, res: Response) {
+    const { name, description } = req.body
 
-  const existingTeam = await prisma.team.findFirst({
-    where: {
-      name,
-    },
-  })
+    const existingTeam = await prisma.team.findFirst({
+      where: {
+        name,
+      },
+    })
 
-  if (existingTeam) {
-    throw new AppError("Já existe uma equipe com esse nome.", 409)
+    if (existingTeam) {
+      throw new AppError("Já existe uma equipe com esse nome.", 409)
+    }
+
+    const team = await prisma.team.create({
+      data: {
+        name,
+        description,
+      },
+    })
+
+    res.status(201).json(team)
   }
 
-  const team = await prisma.team.create({
-    data: {
-      name,
-      description,
-    },
-  })
+  async getTeams(req: Request, res: Response) {
+    const teams = await prisma.team.findMany({})
 
-  res.status(201).json(team)
-}
-
-export async function getTeams(req: Request, res: Response) {
-  const teams = await prisma.team.findMany({})
-
-  res.status(200).json({ teams })
-}
-
-export async function updateTeam(req: Request, res: Response) {
-  const { id } = req.params
-
-  const team = await prisma.team.findUnique({
-    where: { id },
-  })
-
-  if (!team) {
-    throw new AppError("Equipe não encontrada", 404)
+    res.status(200).json({ teams })
   }
 
-  if (!team.id) {
-    throw new AppError("ID da equipe não encontrado", 404)
+  async updateTeam(req: Request, res: Response) {
+    const { id } = req.params
+
+    const team = await prisma.team.findUnique({
+      where: { id },
+    })
+
+    if (!team) {
+      throw new AppError("Equipe não encontrada", 404)
+    }
+
+    if (!team.id) {
+      throw new AppError("ID da equipe não encontrado", 404)
+    }
+
+    if (req.user?.role === "member" && team.id !== req.user.id) {
+      throw new AppError("Unauthorized", 403)
+    }
+
+    const data = updateTeamSchema.parse(req.body)
+
+    const updatedTeam = await prisma.team.update({
+      where: { id },
+      data,
+    })
+
+    res.status(200).json(updatedTeam)
   }
+  async deleteTeam(req: Request, res: Response) {
+    const { id } = req.params
 
-  if (req.user?.role === "member" && team.id !== req.user.id) {
-    throw new AppError("Unauthorized", 403)
+    const team = await prisma.team.findUnique({
+      where: { id },
+    })
+
+    if (!team) {
+      throw new AppError("Equipe não encontrada", 404)
+    }
+
+    await prisma.team.delete({
+      where: { id },
+    })
+
+    res.status(200).json({ message: "Equipe deletada com sucesso!" })
   }
-
-  const data = updateTeamSchema.parse(req.body)
-
-  const updatedTeam = await prisma.team.update({
-    where: { id },
-    data,
-  })
-
-  res.status(200).json(updatedTeam)
-}
-
-export async function deleteTeam(req: Request, res: Response) {
-  const { id } = req.params
-
-  const team = await prisma.team.findUnique({
-    where: { id },
-  })
-
-  if (!team) {
-    throw new AppError("Equipe não encontrada", 404)
-  }
-
-  await prisma.team.delete({
-    where: { id },
-  })
-
-  res.status(200).json({ message: "Equipe deletada com sucesso!" })
 }
