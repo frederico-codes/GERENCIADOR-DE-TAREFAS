@@ -1,15 +1,28 @@
-import { Router } from 'express';
-import { ensureAuthenticated } from '../middewares/ensure-authenticated';
-import { verifyUserAuthorization } from '../middewares/verify-user-authorization';
-import { TeamMembersController } from '../controllers/team-members-controller';
+import { Router } from "express"
+import { ensureAuthenticated } from "../middewares/ensure-authenticated"
+import { verifyUserAuthorization } from "../middewares/verify-user-authorization"
+import { TeamMembersController } from "../controllers/team-members-controller"
 
-const teamMemberRoutes = Router();
-const teamMembersController = new TeamMembersController();
+const teamMemberRoutes = Router()
+const teamMembersController = new TeamMembersController()
 
-teamMemberRoutes.post("/", ensureAuthenticated, verifyUserAuthorization(["admin"]), teamMembersController.addTeamMember);
-teamMemberRoutes.get("/", ensureAuthenticated, teamMembersController.listTeamMembers);
+teamMemberRoutes.post(
+  "/",
+  ensureAuthenticated,
+  verifyUserAuthorization(["admin"]),
+  teamMembersController.addTeamMember,
+)
+teamMemberRoutes.get(
+  "/",
+  ensureAuthenticated,
+  teamMembersController.listTeamMembers,
+)
 
-teamMemberRoutes.delete("/team/:teamId/member/:userId", ensureAuthenticated, verifyUserAuthorization(["admin"]), teamMembersController.removeTeamMember);
+teamMemberRoutes.delete(
+  "/team/:teamId/member/:userId",
+  ensureAuthenticated,
+  verifyUserAuthorization(["admin"]),
+  teamMembersController.removeTeamMember,
+)
 
-
-export { teamMemberRoutes };
+export { teamMemberRoutes }

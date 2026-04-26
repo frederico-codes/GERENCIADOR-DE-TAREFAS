@@ -1,18 +1,18 @@
- import  request from "supertest";
-import { hash } from "bcrypt";
-import { app } from "../app";
-import { prisma } from "../database/prisma";
-import { describe, it, expect, beforeAll, afterAll } from "@jest/globals";
+import request from "supertest"
+import { hash } from "bcrypt"
+import { app } from "../app"
+import { prisma } from "../database/prisma"
+import { describe, it, expect, beforeAll, afterAll } from "@jest/globals"
 
 describe("Tasks routes", () => {
-  let token: string;
-  let user_id: string;
-  let task_ids: string[] = [];
-  let team_ids: string[] = []
-  let team_member_ids: string[] = []
+  let token: string
+  let user_id: string
+  const task_ids: string[] = []
+  const team_ids: string[] = []
+  const team_member_ids: string[] = []
 
   beforeAll(async () => {
-    await prisma.$connect();
+    await prisma.$connect()
 
     const user = await prisma.user.create({
       data: {
@@ -20,18 +20,18 @@ describe("Tasks routes", () => {
         email: `admin-${Date.now()}@test.com`,
         password: await hash("123456", 10),
         role: "admin",
-      },      
-    });    
+      },
+    })
 
-    user_id = user.id;
+    user_id = user.id
 
     const response = await request(app).post("/sessions").send({
       email: user.email,
       password: "123456",
-    });
+    })
 
-    token = response.body.token;
-  });
+    token = response.body.token
+  })
 
   afterAll(async () => {
     await prisma.taskHistory.deleteMany({
@@ -87,19 +87,18 @@ describe("Tasks routes", () => {
         name: `Team ${Date.now()}`,
         description: "Test team",
       },
-    });
+    })
 
-  
-    team_ids.push(team.id);
+    team_ids.push(team.id)
 
     const teamMember = await prisma.teamMember.create({
       data: {
         userId: user_id,
         teamId: team.id,
       },
-    });
+    })
 
-    team_member_ids.push(teamMember.id);
+    team_member_ids.push(teamMember.id)
 
     const response = await request(app)
       .post("/tasks")
@@ -111,16 +110,16 @@ describe("Tasks routes", () => {
         priority: "medium",
         assignedTo: user_id,
         teamId: team.id,
-      });
+      })
 
-      expect(response.status).toBe(201);
-      expect(response.body).toHaveProperty("id");
-      expect(response.body.title).toContain("Task");
+    expect(response.status).toBe(201)
+    expect(response.body).toHaveProperty("id")
+    expect(response.body.title).toContain("Task")
 
-      task_ids.push(response.body.id);
-   });
+    task_ids.push(response.body.id)
+  })
 
-    it("should list tasks", async () => {
+  it("should list tasks", async () => {
     const team = await prisma.team.create({
       data: {
         name: `Team ${Date.now()}`,
@@ -255,5 +254,4 @@ describe("Tasks routes", () => {
 
     expect(deletedTask).toBeNull()
   })
-
-});
+})

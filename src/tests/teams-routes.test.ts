@@ -89,9 +89,9 @@ describe("Teams routes", () => {
         name: `Team ${Date.now()}`,
         description: "Old description",
       },
-    });
+    })
 
-    team_ids.push(team.id);
+    team_ids.push(team.id)
 
     const response = await request(app)
       .put(`/teams/${team.id}`)
@@ -99,13 +99,13 @@ describe("Teams routes", () => {
       .send({
         name: "Updated Team",
         description: "Updated description",
-      });
+      })
 
-    expect(response.status).toBe(200);
-    expect(response.body.id).toBe(team.id);
-    expect(response.body.name).toBe("Updated Team");
-    expect(response.body.description).toBe("Updated description");
-  });
+    expect(response.status).toBe(200)
+    expect(response.body.id).toBe(team.id)
+    expect(response.body.name).toBe("Updated Team")
+    expect(response.body.description).toBe("Updated description")
+  })
 
   it("should delete a team", async () => {
     const team = await prisma.team.create({
@@ -113,21 +113,21 @@ describe("Teams routes", () => {
         name: `Team ${Date.now()}`,
         description: "Test",
       },
-    });
+    })
 
     // NÃO adiciona no team_ids porque vamos deletar manualmente
     const response = await request(app)
       .delete(`/teams/${team.id}`)
-      .set("Authorization", `Bearer ${token}`);
+      .set("Authorization", `Bearer ${token}`)
 
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe("Equipe deletada com sucesso!");
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe("Equipe deletada com sucesso!")
 
     // valida se realmente foi removido do banco
     const deletedTeam = await prisma.team.findUnique({
       where: { id: team.id },
-    });
+    })
 
-    expect(deletedTeam).toBeNull();
-  });
+    expect(deletedTeam).toBeNull()
+  })
 })
