@@ -32,6 +32,13 @@ export class TasksStatusController {
       throw new AppError("A tarefa já está com esse status.", 400)
     }
 
+    if (newTask.status === "pending" && status === "completed") {
+      throw new AppError(
+        "Não é possível alterar o status de pending para completed diretamente. Primeiro altere para in_progress.",
+        400,
+      )
+    }
+
     const updatedTask = await prisma.task.update({
       where: { id },
       data: { status },
