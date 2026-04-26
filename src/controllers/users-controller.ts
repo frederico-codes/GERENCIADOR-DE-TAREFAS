@@ -8,11 +8,10 @@ const createUserSchema = z.object({
   name: z.string().trim().min(1, "O nome é obrigatório."),
   email: z.string().email("Email inválido."),
   password: z.string().min(6, "A senha deve conter no mínimo 6 caracteres."),
-  role: z.enum(["admin", "member"]).optional(),
 })
 
 export async function createUser(req: Request, res: Response) {
-  const { name, email, password, role } = createUserSchema.parse(req.body)
+  const { name, email, password } = createUserSchema.parse(req.body)
 
   const userAlreadyExists = await prisma.user.findUnique({
     where: { email },
@@ -29,7 +28,6 @@ export async function createUser(req: Request, res: Response) {
       name,
       email,
       password: passwordHash,
-      ...(role && { role }),
     },
   })
 
