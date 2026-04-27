@@ -6,21 +6,17 @@ import { TeamMembersController } from "../controllers/team-members-controller"
 const teamMemberRoutes = Router()
 const teamMembersController = new TeamMembersController()
 
+teamMemberRoutes.use(ensureAuthenticated)
+
 teamMemberRoutes.post(
   "/",
-  ensureAuthenticated,
   verifyUserAuthorization(["admin"]),
   teamMembersController.addTeamMember,
 )
-teamMemberRoutes.get(
-  "/",
-  ensureAuthenticated,
-  teamMembersController.listTeamMembers,
-)
+teamMemberRoutes.get("/", teamMembersController.listTeamMembers)
 
 teamMemberRoutes.delete(
   "/team/:teamId/member/:userId",
-  ensureAuthenticated,
   verifyUserAuthorization(["admin"]),
   teamMembersController.removeTeamMember,
 )

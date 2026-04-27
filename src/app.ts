@@ -8,9 +8,5 @@ const app = express()
 app.use(express.json())
 app.use(routes)
 
-// app.get('/', (req, res) => {
-//   res.send('API de Gerenciamento de Tarefas');
-// });
-
 app.use(errorHandling)
 export { app }
